@@ -5,7 +5,7 @@ const router = Router();
 
 
 // Authentication routes
-router.post("auth/login", AuthController.login);
+router.post("/auth/login", AuthController.login);
 
 
 

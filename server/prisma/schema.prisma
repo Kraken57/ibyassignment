@@ -16,7 +16,7 @@ datasource db {
 model User {
   id         Int         @id @default(autoincrement())
   name       String      @db.VarChar(191)
-  email      String      @unique @db.VarChar(191)
+  email      String      @db.VarChar(191) @unique
   provider   String      @db.VarChar(191)
   oauth_id   String
   image      String?

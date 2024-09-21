@@ -1,5 +1,8 @@
-import { AuthOptions, ISODateString } from "next-auth";
+import { Account, AuthOptions, ISODateString, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
+import axios from "axios";
+import { LOGIN_URL } from "@/lib/apiEndPoints";
 
 export interface CustomSession {
   user?: CustomUser;
@@ -20,11 +23,31 @@ export const authOptions: AuthOptions = {
     signIn: "/",
   },
   callbacks: {
-
-    async signIn({user, account}) {
+    async signIn({
+      user,
+      account,
+    }: {
+      user: CustomUser;
+      account: Account | null;
+    }) {
+      try {
         console.log("The user data is", user);
         console.log("The account data is", account);
-        return true;        
+        const payload = {
+          email: user.email,
+          name: user.name,
+          oauth_id: account?.providerAccountId,
+          provider: account?.provider,
+          image: user?.image,
+        };
+        const { data } = await axios.post(LOGIN_URL, payload);
+        user.id = data?.user?.id.toString(); //toString() is used to convert the id to string bcz in backend id is a number
+        user.token = data?.user?.token;
+        user.provider = data?.user?.provider;
+        return true;
+      } catch (error) {
+        return false;
+      }
     },
 
     async jwt({ token, user }) {
@@ -56,6 +79,7 @@ export const authOptions: AuthOptions = {
           prompt: "consent",
           access_type: "offline",
           response_type: "code",
+          scope: "openid email profile",
         },
       },
     }),

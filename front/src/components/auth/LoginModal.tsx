@@ -10,22 +10,39 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
+
+// const handleLogin = async () => {
+//   signIn("google", {
+//     callbackUrl: "/dashboard",
+//     redirect: true,
+//   });
+// };
 
 export default function LoginModal() {
+  const handleLogin = async () => {
+    signIn("google", {
+      callbackUrl: "http://localhost:3000/dashboard",
+      redirect: true,
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Getting start</Button>
+        <Button className="bg-black text-white hover:bg-gray-800 rounded-xl">
+          Getting start
+        </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="bg-white p-6 border border-gray-300 rounded-lg shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-2xl">Welcome to ChatApp</DialogTitle>
           <DialogDescription>
-          ChatApp allows you to easily generate secure chat links and 
-          initiate conversations within moments.
+            ChatApp allows you to easily generate secure chat links and initiate
+            conversations within moments.
           </DialogDescription>
         </DialogHeader>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleLogin}>
           <Image
             src="/images/google.png"
             className=" mr-4"

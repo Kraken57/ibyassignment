@@ -10,10 +10,14 @@ export default function HeroSection() {
         Create Chat Links Instantly for Effortless Communication
       </h1>
       <p className="text-xl text-gray-600 mb-8">
-      With ChatApp, generating secure chat links and initiating conversations takes just seconds.
+        With ChatApp, generating secure chat links and initiating conversations
+        takes just seconds.
       </p>
       <Link href="/dashboard">
-        <Button size="lg" className="animate-pulse ">
+        <Button
+          size="lg"
+          className="animate-pulse bg-black text-white hover:bg-gray-800 rounded-xl"
+        >
           Start Chatting
         </Button>
       </Link>
@@ -23,8 +27,8 @@ export default function HeroSection() {
         <Image
           src="/images/conversation.svg"
           alt="Illustration"
-          width={500} // Replace with the appropriate width
-          height={500} // Replace with the appropriate height
+          width={500} 
+          height={500}
           className="w-full h-auto"
         />
       </div>

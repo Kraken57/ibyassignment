@@ -20,7 +20,7 @@ class AuthController {
       });
 
       if (!findUser) {
-        let findUser = await prisma.user.create({
+        findUser = await prisma.user.create({
           data: body,
         });
       }
