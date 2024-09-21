@@ -30,7 +30,7 @@ export default function LoginModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-black text-white hover:bg-gray-800 rounded-xl">
+        <Button className="bg-black text-white hover:bg-gray-800 rounded-t rounded-b">
           Getting start
         </Button>
       </DialogTrigger>

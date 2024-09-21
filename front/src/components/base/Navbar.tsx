@@ -16,7 +16,9 @@ export default function Navbar({ user }: { user?: CustomUser }) {
           <LoginModal />
         ) : (
           <Link href="/dashboard">
-            <Button>Dashboard</Button>
+            <Button className="bg-black text-white hover:bg-gray-800 rounded-t rounded-b">
+              Dashboard
+            </Button>
           </Link>
         )}
       </div>

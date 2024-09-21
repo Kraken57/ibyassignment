@@ -16,7 +16,7 @@ export default function HeroSection() {
       <Link href="/dashboard">
         <Button
           size="lg"
-          className="animate-pulse bg-black text-white hover:bg-gray-800 rounded-xl"
+          className="animate-pulse bg-black text-white hover:bg-gray-800 rounded-t rounded-b"
         >
           Start Chatting
         </Button>
@@ -27,7 +27,7 @@ export default function HeroSection() {
         <Image
           src="/images/conversation.svg"
           alt="Illustration"
-          width={500} 
+          width={500}
           height={500}
           className="w-full h-auto"
         />
