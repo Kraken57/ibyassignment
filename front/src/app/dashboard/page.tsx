@@ -8,7 +8,11 @@ export default async function dashboard() {
 
   return (
     <div>
-      <DashNavbar name={session?.user?.name} image={session?.user?.image ?? undefined} />
+      <p>{JSON.stringify(session)}</p>
+      <DashNavbar
+        name={session?.user?.name}
+        image={session?.user?.image ?? undefined}
+      />
     </div>
   );
 }
