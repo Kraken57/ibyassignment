@@ -14,27 +14,29 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  name       String      @db.VarChar(191)
-  email      String      @db.VarChar(191) @unique
-  provider   String      @db.VarChar(191)
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(191)
+  email      String   @unique @db.VarChar(191)
+  provider   String   @db.VarChar(191)
   oauth_id   String
   image      String?
-  created_at DateTime    @default(now())
+  created_at DateTime @default(now())
 
   ChatGroup ChatGroup[]
+
   @@map("users")
 }
 
 model ChatGroup {
-  id         String       @id @default(uuid()) @db.Uuid
-  user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  id         String   @id @default(uuid()) @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    Int
-  created_at DateTime     @default(now())
-  title      String       @db.VarChar(191)
-  passcode   String       @db.VarChar(30)
+  created_at DateTime @default(now())
+  title      String   @db.VarChar(191)
+  passcode   String   @db.VarChar(30)
 
   GroupUsers GroupUsers[]
+  Chats      Chats[]
 
   @@index([created_at])
   @@map("chat_groups")
@@ -48,4 +50,17 @@ model GroupUsers {
   created_at DateTime  @default(now())
 
   @@map("group_users")
+}
+
+model Chats {
+  id         String    @id @default(uuid()) @db.Uuid
+  group      ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  group_id   String    @db.Uuid
+  message    String?
+  name       String
+  file       String?
+  created_at DateTime  @default(now())
+
+  @@index([created_at])
+  @@map("chats")
 }

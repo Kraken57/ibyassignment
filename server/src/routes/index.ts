@@ -11,7 +11,7 @@ router.post("/auth/login", AuthController.login);
 
 // chat group routes
 router.get("/chat-group", authenticationGuard, ChatController.create);
-router.get("/chat-group/:id", authenticationGuard, ChatController.show);
+router.get("/chat-group/:id", ChatController.show);
 router.post("/chat-group", authenticationGuard, ChatController.store);
 router.put("/chat-group/:id", authenticationGuard, ChatController.update);
 router.delete("/chat-group/:id", authenticationGuard, ChatController.delete);
