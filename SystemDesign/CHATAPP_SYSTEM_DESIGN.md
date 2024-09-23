@@ -2,12 +2,6 @@
 
 This document outlines the system design for a scalable, real-time chat application.
 
-## Acknowledgement
-
-- [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
-- [Awesome README](https://github.com/matiassingers/awesome-readme)
-- [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
-
 ## What is a Chat Application
 
 A chat application is a software platform that enables users to send and receive instant messages in real-time. These applications allow users to communicate with one another via text, voice, or video, providing a seamless and instantaneous way to connect, whether one-on-one or in groups.
@@ -18,22 +12,22 @@ Our system should meet the following requirements:
 
 #### Functional Requirements :
 
-    1. Server should receive data.
-    2. Should support one-on-one chat.
-    3. Group chats.
-    4. Should support file sharing.
+1. Server should receive data.
+2. Should support one-on-one chat.
+3. Group chats.
+4. Should support file sharing.
 
 #### Non Functional Requirements :
 
-    1. Ensure reliability and high availability
-    2. Minimize delays for quick response times.
-    3. Enable efficient scalability to support growing users and data.
+1. Ensure reliability and high availability
+2. Minimize delays for quick response times.
+3. Enable efficient scalability to support growing users and data.
 
 #### Extended requirements :
 
-    1. Sent, Delivered, and Read receipts of the messages.
-    2. Show the last seen time of users.
-    3. Push notifications.
+1. Sent, Delivered, and Read receipts of the messages.
+2. Show the last seen time of users.
+3. Push notifications.
 
 ## Estimation and Constraints
 
@@ -230,11 +224,14 @@ To address the issue of cross-server communication, we can implement a messaging
 #### **Problem Statement** :
 
 >As the user base of the chat application grows, the volume of messages can become overwhelming. For instance, if the application has 100 users and each user sends one message per second, this translates to 100 messages per second. Directly storing this influx of messages in PostgreSQL can lead to performance bottlenecks, potential database crashes, and a poor user experience.
+
 ![Alt text](imgs/without-kafka.png)
 
 #### **Proposed Solution: Apache Kafka** :
 
 To effectively manage high message throughput and ensure scalable message processing, we can introduce Apache Kafka as an intermediary message broker. Kafka is designed to handle high-volume data streams efficiently and acts as a buffer between message producers and consumers.
+
+![Alt text](imgs/with-kafka.png)
 
 #### How It Works :
 1. User Sends a Message:
