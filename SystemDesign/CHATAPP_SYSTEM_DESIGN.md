@@ -196,14 +196,14 @@ To address the issue of cross-server communication, we can implement a messaging
 2. Publishing to Redis:
     - The message is then published to a designated Redis channel, such as `Event.MESSAGES` :
 
-    ```
+    ```javascript
     redisClient.publish("Event.MESSAGES", JSON.stringify({ userId: User-1.id, message: "hello" }));
     ```
 
 3. Subscription by Other Users:
     - All users connected to various servers subscribe to the same Redis channel:
 
-    ```
+    ```javascript
     redisClient.subscribe("Event.MESSAGES");
     ```
 
@@ -228,8 +228,9 @@ To address the issue of cross-server communication, we can implement a messaging
 ### Scaling the Application with Kafka
 
 #### **Problem Statement** :
-![Alt text](imgs/without-kafka.png)
+
 >As the user base of the chat application grows, the volume of messages can become overwhelming. For instance, if the application has 100 users and each user sends one message per second, this translates to 100 messages per second. Directly storing this influx of messages in PostgreSQL can lead to performance bottlenecks, potential database crashes, and a poor user experience.
+![Alt text](imgs/without-kafka.png)
 
 #### **Proposed Solution: Apache Kafka** :
 
@@ -238,7 +239,8 @@ To effectively manage high message throughput and ensure scalable message proces
 #### How It Works :
 1. User Sends a Message:
     - When a user sends a message, it is published to a Kafka topic instead of directly to the database:
-    ```
+
+    ```javascript
     kafkaProducer.send({
         topic: 'chat-messages',
         messages: [{ value: JSON.stringify({ userId: User-1.id, message: "hello" }) }]
@@ -253,7 +255,7 @@ To effectively manage high message throughput and ensure scalable message proces
 
     - The consumer can be implemented as a separate microservice that reads from the Kafka topic:
 
-    ```
+    ```javascript
     kafkaConsumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const { userId, message } = JSON.parse(message.value);
@@ -265,9 +267,9 @@ To effectively manage high message throughput and ensure scalable message proces
 4. Data Storage:
     - After processing, the consumer writes the messages to PostgreSQL for persistent storage:
 
-    ```
+    ```javascript
     async function saveToDatabase(userId, message) {
-    await db.query('INSERT INTO messages (user_id, content) VALUES ($1, $2)', [userId, message]);
+        await db.query('INSERT INTO messages (user_id, content) VALUES ($1, $2)', [userId, message]);
     }
     ```
 
