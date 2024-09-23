@@ -1,36 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## ChatApp - A Messaging Service Prototype
+
+### Name: Ahmad Saad (22115011)
+### Univeristy : IIT Roorkee
+### Department : Electrical Engineering
+
+---
+
+This project is a real-time chat application designed to facilitate instant communication between users. It allows multiple users to engage in live conversations with real-time updates using Socket.IO. The app also features Google-based authentication through NextAuth for secure login, and a responsive, modern UI built with Tailwind CSS and shadcn components.
+
+### Technologies Used
+
+- Next.js (Server and Client-side rendering)
+- shadcn (Component library)
+- Prisma (ORM)
+- Tailwind CSS (CSS Framework)
+- Axios (HTTP Client)
+- Zod (Schema validation)
+- @hookform/resolvers Zod (Form validation with Zod and react-hook-form)
+- react-hook-form (Form handling)
+- jsonwebtoken (JWT Authentication)
+- @radix-ui/react-icons (Icon library)
+- Socket.IO (Real-time communication)
+- Redis (In-memory data store)
+- PostgreSQL (Database)
+- Supabase (Backend as a service for authentication and database)
+- Google Auth (OAuth)
+- NextAuth (Authentication library for Next.js)
+- Socket.IO-Client (Client for real-time communication)
+- cross-env (Environment variable management)
+
+---
+
+### Prerequisites
+
+Before setting up the project, ensure you have the following installed on your machine:
+
+- [Node.js](https://nodejs.org/en) (version >= 16.0.0)
+- [PostgreSQL](https://www.postgresql.org/) (for database setup)
+- [Redis](https://redis.io/) (for real-time functionalities)
+- [Supabase](https://supabase.com/) (for user authentication)
+- [Google Cloud Console](https://console.cloud.google.com/) account for OAuth
+- A [GitHub](https://github.com/) account to clone the repository
 
 ## Getting Started
+1. Clone the repository :
 
-First, run the development server:
+    ```bash
+    git clone https://github.com/Kraken57/ibyassignment
+    cd ibyassignment
+    ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install Dependencies
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    ```bash
+    npm install
+    ```
+    > make sure you have `npm` installed in you device
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+    or
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    ```bash
+    yarn install
+    ```
+3. Setup Environment Variables
 
-## Learn More
+    Create a .env file in the root directory and add the following:
 
-To learn more about Next.js, take a look at the following resources:
+    ```bash
+    DATABASE_URL=postgresql://username:password@localhost:5432/yourdb
+    REDIS_URL=redis://localhost:6379
+    NEXTAUTH_URL=http://localhost:3000
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    JWT_SECRET=your_jwt_secret
+    GOOGLE_CLIENT_ID=your_google_client_id
+    GOOGLE_CLIENT_SECRET=your_google_client_secret
+    ```
+    > Replace the placeholder values (username, password, etc.) with your actual credentials.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Setup PostgreSQL (**Optional as we will use Supabase**)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+    Make sure PostgreSQL is running on your system. You can create a database with the following commands:
 
-## Deploy on Vercel
+    ```
+    psql postgres
+    CREATE DATABASE yourdb;
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Setup Prisma
+    To migrate the database schema, run:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```bash
+    npx prisma migrate dev
+    ```
+
+    This will generate your database schema based on the Prisma models.
+
+6. Run Redis
+
+    Ensure Redis is running locally. If Redis is installed, you can start it with:
+
+    ```bash
+    redis-server
+    ```
+7. OAuth Setup (Google Auth)
+    
+    Go to the Google Cloud Console, create a new project, and configure the OAuth consent screen.
+
+    - Add your application details.
+    - Set the redirect URI to http://localhost:3000/api/auth/callback/google.
+    - Save your Client ID and Client Secret to the .env file.
+
+8. Running the Application
+
+    Once everything is set up, start the development server:
+
+    ```bash
+    npm run dev
+    ```
+    
+    or
+
+    ```bash
+    yarn dev
+    ```
+
+    This should launch the application on http://localhost:3000.
+
+9. Using Socket.IO
+
+    Make sure the Socket.IO server is running. Check the `server.js` or equivalent file for the configuration. If you’re using `socket.io-client`, it should connect automatically.
+
+10. Prisma Studio (Optional)
+
+    If you'd like to view and manage your database via Prisma Studio, run:
+
+    ```bash
+    npx prisma studio
+    ```
+
+### Running Tests
+
+    If you've implemented any tests, include instructions on how to run them here:
+
+    ```bash
+    npm run test
+    ```
+
+### Additional Setup Notes
+    
+- Tailwind CSS: Ensure you're using the proper class utilities as per the Tailwind configuration.
+    
+- Cross-Env: If you're dealing with cross-platform environment variables, ensure you're using cross-env in your scripts for consistency.
