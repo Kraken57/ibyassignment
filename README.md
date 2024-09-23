@@ -46,7 +46,7 @@ Before setting up the project, ensure you have the following installed on your m
 1. Clone the repository :
 
     ```bash
-    git clone https://github.com/Kraken57/ibyassignment
+    git clone https://github.com/Kraken57/ibyassignment.git
     cd ibyassignment
     ```
 
