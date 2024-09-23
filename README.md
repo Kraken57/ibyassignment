@@ -103,6 +103,7 @@ Before setting up the project, ensure you have the following installed on your m
     ```bash
     redis-server
     ```
+    > Try setting up `docker` to use `redis` as it makes it easier
 7. OAuth Setup (Google Auth)
     
     Go to the Google Cloud Console, create a new project, and configure the OAuth consent screen.
@@ -141,11 +142,11 @@ Before setting up the project, ensure you have the following installed on your m
 
 ### Running Tests
 
-    If you've implemented any tests, include instructions on how to run them here:
+If you've implemented any tests, include instructions on how to run them here:
 
-    ```bash
+```bash
     npm run test
-    ```
+```
 
 ### Additional Setup Notes
     
