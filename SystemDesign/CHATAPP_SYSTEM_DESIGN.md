@@ -165,13 +165,16 @@ This document outlines the design considerations for a simple chat application t
   - User-1 on Port A sends a message to User-4 on Port B.
   - Due to the architecture, User-1 cannot reach User-4, leading to a fragmented communication experience.
 
+---
 ### Solving Cross-Server Communication Issues with Redis Pub/Sub
 
 #### **Problem Statement** :
 
 > In a chat application, users connected to different servers or ports cannot communicate with each other directly. For instance, if User-1 sends a message while connected to Server 1, User-4, who is connected to Server 2, will not receive that message due to the inherent isolation between the two servers. This lack of interoperability can lead to fragmented user experiences and limit the application's functionality, preventing a seamless communication flow among all users.
 
-#### Proposed Solution: Redis Pub/Sub
+
+
+#### **Proposed Solution: Redis Pub/Sub** :
 
 ##### Redis :
 > Redis is a fast, in-memory database that helps store and manage data quickly. It's often used for real-time applications, like chat apps, because it can send messages between users instantly. Redis uses a simple system called Pub/Sub, where messages are published to channels and everyone subscribed to those channels can receive them immediately. This makes it great for handling lots of messages without delays.
@@ -186,39 +189,93 @@ To address the issue of cross-server communication, we can implement a messaging
 1. User Sends a Message 
     - When User-1 wishes to send a message, they emit an event using Socket.IO:
 
-```javascript
-socket.emit("MESSAGE", "hello");
-```
+    ```javascript
+    socket.emit("MESSAGE", "hello");
+    ```
+
 2. Publishing to Redis:
     - The message is then published to a designated Redis channel, such as `Event.MESSAGES` :
 
-```
-redisClient.publish("Event.MESSAGES", JSON.stringify({ userId: User-1.id, message: "hello" }));
-```
+    ```
+    redisClient.publish("Event.MESSAGES", JSON.stringify({ userId: User-1.id, message: "hello" }));
+    ```
 
 3. Subscription by Other Users:
-
     - All users connected to various servers subscribe to the same Redis channel:
-```
-redisClient.subscribe("Event.MESSAGES");
-```
+
+    ```
+    redisClient.subscribe("Event.MESSAGES");
+    ```
 
 4. Message Broadcasting:
-
     - When a message is published, Redis broadcasts it to all clients that are subscribed to the channel. Each subscribed client listens for new messages:
-```javascript
-redisClient.on("message", (channel, message) => {
-    const { userId, message } = JSON.parse(message);
-    displayMessage(userId, message);
-});
-```
-5. Message Handling:
+    ```javascript
+    redisClient.on("message", (channel, message) => {
+        const { userId, message } = JSON.parse(message);
+        displayMessage(userId, message);
+    });
+    ```
 
-   - Upon receiving a message, each client can update its UI to display the new message, ensuring that all users are kept in sync.
+5. Message Handling:
+    - Upon receiving a message, each client can update its UI to display the new message, ensuring that all users are kept in sync.
 
 #### Benefits of Using Redis :
 - Real-Time Communication: Redis Pub/Sub enables instantaneous message delivery, enhancing the overall chat experience by minimizing latency.
 - Decoupling: The architecture effectively decouples the message producers (users) from the message consumers (other users), allowing for flexible scaling without tight coupling.
 - Performance: Redis operates primarily in memory, which allows for extremely low-latency message handling, even under heavy loads.
 
-    
+---
+### Scaling the Application with Kafka
+
+#### **Problem Statement** :
+![Alt text](imgs/without-kafka.png)
+>As the user base of the chat application grows, the volume of messages can become overwhelming. For instance, if the application has 100 users and each user sends one message per second, this translates to 100 messages per second. Directly storing this influx of messages in PostgreSQL can lead to performance bottlenecks, potential database crashes, and a poor user experience.
+
+#### **Proposed Solution: Apache Kafka** :
+
+To effectively manage high message throughput and ensure scalable message processing, we can introduce Apache Kafka as an intermediary message broker. Kafka is designed to handle high-volume data streams efficiently and acts as a buffer between message producers and consumers.
+
+#### How It Works :
+1. User Sends a Message:
+    - When a user sends a message, it is published to a Kafka topic instead of directly to the database:
+    ```
+    kafkaProducer.send({
+        topic: 'chat-messages',
+        messages: [{ value: JSON.stringify({ userId: User-1.id, message: "hello" }) }]
+    });
+    ```
+
+2. Kafka Topic:
+    - The messages are organized in a Kafka topic (e.g., chat-messages), which can efficiently handle the incoming stream of messages due to Kafka's partitioning and replication capabilities.
+
+3. Consumers:
+    - A dedicated consumer service continuously reads messages from the Kafka topic. This consumer is responsible for processing the messages and ensuring they are correctly formatted for database storage.
+
+    - The consumer can be implemented as a separate microservice that reads from the Kafka topic:
+
+    ```
+    kafkaConsumer.run({
+        eachMessage: async ({ topic, partition, message }) => {
+            const { userId, message } = JSON.parse(message.value);
+            await saveToDatabase(userId, message);
+        }
+    });
+    ```
+
+4. Data Storage:
+    - After processing, the consumer writes the messages to PostgreSQL for persistent storage:
+
+    ```
+    async function saveToDatabase(userId, message) {
+    await db.query('INSERT INTO messages (user_id, content) VALUES ($1, $2)', [userId, message]);
+    }
+    ```
+
+#### Benefits of Using Kafka :
+
+-   High Throughput: Kafka is designed to handle a massive volume of messages efficiently, making it well-suited for applications with high message rates.
+- Durability: Messages published to Kafka are stored for a configurable retention period, allowing for recovery in case of consumer failure or crashes.
+- Scalability: Kafka can be scaled horizontally by adding more brokers and partitions, allowing the system to accommodate increased loads seamlessly. This capability ensures that even during peak usage, message delivery remains reliable.
+
+#### Conclusion :
+By leveraging Redis Pub/Sub for real-time cross-server communication and implementing Apache Kafka for scalable message processing, we can construct a robust chat application that efficiently handles high message volumes while ensuring seamless interactions among users. This architectural design addresses both immediate communication needs and future scalability challenges, setting the foundation for an adaptable and responsive chat application.
