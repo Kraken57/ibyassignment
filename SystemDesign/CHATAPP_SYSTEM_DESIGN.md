@@ -166,7 +166,7 @@ After a successful sign-in, the token provided by the backend is stored within t
     - Google returns the user profile information.
     - The API sends a POST request to the custom backend to authenticate the user and retrieve a token.
 
-![Alt text](imgs/api-design.png)
+![Alt Text](imgs/api-design.png)
 
 - *Payload to Backend*:
 ```json
