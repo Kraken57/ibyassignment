@@ -26,7 +26,7 @@ This project is a real-time chat application designed to facilitate instant comm
 - [Supabase](https://supabase.com/) (Backend as a service for authentication and database)
 - [Google Cloud Console](https://console.cloud.google.com/) (OAuth)
 - [NextAuth](https://next-auth.js.org/) (Authentication library for Next.js)
-- [Socket.IO-Client]((https://socket.io/)) (Client for real-time communication)
+- [Socket.IO-Client](https://socket.io/) (Client for real-time communication)
 - [cross-env](https://www.npmjs.com/package/cross-env) (Environment variable management)
 
 ---
@@ -192,5 +192,3 @@ npm run test
 - **Socket.IO-Client (Client for real-time communication)**: Facilitates real-time communication on the client side, allowing users to exchange messages instantly with minimal latency.
 
 - **cross-env (Environment variable management)**: Ensures compatibility when setting environment variables across different operating systems (Windows, Mac, Linux) during development and production.
-
-This detailed reasoning for each technology choice will help others understand why your stack is optimized for building this real-time chat application and why it’s more effective than common alternatives.
