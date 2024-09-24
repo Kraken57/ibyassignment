@@ -138,6 +138,95 @@ This table stores the chat messages exchanged within each group.
 
 This data model provides a comprehensive structure for managing users, chat groups, and messages in a chat application. By utilizing relational database principles, it ensures that the system can efficiently handle user interactions and maintain data integrity. Feel free to modify the descriptions or details to better fit your application's specific requirements!
 
+##  Authentication Flow
+
+![Alt text](imgs/authentication.png)
+
+#### Login Flow
+
+1. **Sign-in Request**: A user initiates the login process by signing in using Google OAuth.
+2. **Google Authentication**: The OAuth process retrieves the user's profile (name, email, and image) and a provider account ID.
+3. **Custom Backend Login**: Once the user's Google data is obtained, a request is sent to the custom backend (`LOGIN_URL`) with the user’s information. The backend checks if the user exists or creates a new user if necessary.
+4. **Session Token Creation**: The backend returns a JWT token and user data, which is then attached to the session object.
+5. **Token Handling**: The token is stored for further authentication in subsequent API requests.
+
+#### Token-based Authentication
+
+After a successful sign-in, the token provided by the backend is stored within the user session. This token is then used for authentication during subsequent operations that require user verification.
+
+## API Design
+
+*POST /api/auth/signin*:
+- Purpose: Start the OAuth login process using Google as the provider.
+
+- Flow:
+
+    - User clicks on the "Sign in with Google" button.
+    - NextAuth redirects to Google’s OAuth consent page.
+    - Google returns the user profile information.
+    - The API sends a POST request to the custom backend to authenticate the user and retrieve a token.
+
+![Alt text](imgs/api-design.png)
+
+- *Payload to Backend*:
+```json
+{
+  "email": "user@example.com",
+  "name": "User Name",
+  "oauth_id": "123456789",
+  "provider": "google",
+  "image": "user_image_url"
+}
+```
+- Response from Backend:
+```json
+{
+  "user": {
+    "id": "1",
+    "token": "jwt_token",
+    "provider": "google"
+  }
+}
+```
+- NextAuth Integration:
+
+    - The backend response is used to update the user object, storing the user ID and token in the session.
+
+*Callbacks in NextAuth*
+
+- **signIn()**:
+
+    - Verifies the user after receiving data from Google OAuth.
+    - Sends user data to the backend for authentication and retrieves the token and user ID.
+    - If successful, the session is established.
+
+- **jwt()**:
+
+    - Updates the JWT token with the user information after login.
+    - This token is passed in subsequent API calls for verifying the user.
+
+- **session()**:
+
+    - Ensures that the token is available in every session and can be accessed when needed during user operations.
+
+#### Security Considerations
+- *JWT Expiration*: The token received from the backend includes an expiration (set to 365 days in this case). This ensures that the user’s session remains active for a long period unless manually logged out.
+- *Google OAuth Scopes*: The Google OAuth scope includes `openid`, `email`, and `profile` to retrieve minimal information needed for authentication without exposing excessive data.
+
+#### Error Handling
+- Invalid Login:
+
+    - If an error occurs during the sign-in process or backend authentication, an appropriate error message is returned.
+    - In the signIn() callback, returning false prevents the login attempt and renders an error message on the client side.
+
+- Session Expiry:
+
+    - If the JWT token expires or is invalidated, the user will be logged out, and the session will be terminated.
+
+#### **Scalability and Future Enhancements**
+- **Additional Providers**: While this setup uses Google OAuth, other providers like GitHub, Facebook, or custom OAuth providers can be added to NextAuth easily.
+- **Multi-factor Authentication (MFA)**: MFA can be introduced in future iterations to add an extra layer of security.
+
 ## Design
 
 ### Cross-Server Communication Issues
